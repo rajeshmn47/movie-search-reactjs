@@ -5,6 +5,7 @@ import {useState,useEffect} from 'react'
 import {auth,db} from './firebase'
 import ImageUpload from './imageupload';
 import Post from './Post'
+import InstagramEmbed from "react-instagram-embed";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
