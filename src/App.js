@@ -2,8 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import{Button,Modal,Input,makeStyles} from '@material-ui/core'
 import {useState,useEffect} from 'react'
-import {auth,db,provider} from './firebase'
+import {auth,db} from './firebase'
 import ImageUpload from './imageupload';
+import Post from './Post'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,7 +25,7 @@ function App() {
   const[opensignin,setOpensignin]=useState(false)
   const[password,setPassword]=useState('')
   const[email,setEmail]=useState('')
-
+const[posts,setPosts]=useState()
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -50,6 +51,18 @@ function App() {
       .catch((error) => alert(error.message));
     setOpensignin(false)
   }
+  console.log(posts)
+  useEffect(() => {
+    db.collection("posts").onSnapshot((snapshot) => {
+      setPosts(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }))
+      );
+    });
+    console.log({ posts });
+  }, []);
   const signup=(e)=>{
 e.preventDefault()
 auth
@@ -114,6 +127,44 @@ auth
             color="primary"     disableElevation>login</Button>
   <Button onClick={()=>setOpensignin(true)}   variant="outlined"
             color="primary"     disableElevation>signup</Button></div></>}
+  </div>
+  <div className="app__posts">
+        <div className="app__postsLeft">
+  {posts?.map((p)=><>
+  <Post   key={p.data.id}
+              postId={p.data.id}
+              user={user}
+              username={p.data.username} caption={p.data.caption} url={p.data.imageUrl}/>
+  </>)}
+  </div>
+  <div className="app__postsRight">
+          <h3>Clone Made By - </h3>
+          <InstagramEmbed
+            url="https://www.instagram.com/p/CAAU_4unOFr/"
+            maxWidth={320}
+            hideCaption={false}
+            containerTagName="div"
+            protocol=""
+            injectScript
+            onLoading={() => {}}
+            onSuccess={() => {}}
+            onAfterRender={() => {}}
+            onFailure={() => {}}
+          />
+          <InstagramEmbed
+            url="https://www.instagram.com/p/B5f2GV4l8t-/"
+            maxWidth={320}
+            hideCaption={false}
+            containerTagName="div"
+            protocol=""
+            injectScript
+            onLoading={() => {}}
+            onSuccess={() => {}}
+            onAfterRender={() => {}}
+            onFailure={() => {}}
+          />
+        </div>
+    
   </div>
   {user&&<ImageUpload username={user?.displayName}/>}
   </div>

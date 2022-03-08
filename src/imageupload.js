@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@material-ui/core";
-import db from "./firebase";
+import {db} from "./firebase";
 import {firebaseApp} from "./firebase";
 import {
   getStorage,
@@ -10,6 +10,7 @@ import {
 } from "firebase/storage";
 import { getDatabase, push, set, onValue, query, orderByChild, serverTimestamp }
  from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+ import './App.css'
 
 
 export const ImageUpload=({username})=>{
@@ -22,7 +23,8 @@ export const ImageUpload=({username})=>{
         setImage(e.target.files[0]);
       }
     };
-  
+ 
+    
     const handleUpload = () => {
         const fileName = new Date().getTime() + image.name;
         const storage = getStorage(firebaseApp);
@@ -33,9 +35,10 @@ export const ImageUpload=({username})=>{
             (snapshot) => {
               // Observe state change events such as progress, pause, and resume
               // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-              const progress =
+              const progressed =
                 (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
+              console.log("Upload is " + progressed + "% done");
+            
               switch (snapshot.state) {
                 case "paused":
                   console.log("Upload is paused");
@@ -56,7 +59,7 @@ export const ImageUpload=({username})=>{
                 console.log(downloadURL)
                 setUrl(downloadURL)
                 db.collection("posts").add({
-                  timestamp:new Date,
+                  timestamp:new Date().getTime(),
                   caption: caption,
                   imageUrl: url,
                   username: username,
